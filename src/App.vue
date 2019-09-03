@@ -12,7 +12,18 @@ export default {
   name: 'app',
   components: {
     HelloWorld
-  }
+  },
+  mounted() {
+    this.$axios.get('/api/cityList').then((res)=>{
+       var city = res.data.data.cities;
+       var zm_num = [];
+       for(var i = 0; i < city.length; i++){
+           console.log(city[i]);
+           var filterzm = city[i].py.substring(0,1).toUpperCase();
+           console.log(filterzm)
+       }
+    })
+  },
 }
 </script>
 
