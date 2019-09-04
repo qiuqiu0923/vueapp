@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
+
     <HelloWorld msg="Welcome to Your Vue.js App"/>
   </div>
 </template>
@@ -16,12 +16,36 @@ export default {
   mounted() {
     this.$axios.get('/api/cityList').then((res)=>{
        var city = res.data.data.cities;
-       var zm_num = [];
-       for(var i = 0; i < city.length; i++){
-           console.log(city[i]);
-           var filterzm = city[i].py.substring(0,1).toUpperCase();
-           console.log(filterzm)
-       }
+        var clitywrapper = [];
+        for(var i = 0; i < city.length; i++){
+            var cityszm = city[i].py.substring(0,1).toUpperCase();
+            var tmp =  {index:cityszm,list:[{nm:city[i].nm,py:city[i].py}]};
+            if( checkval( cityszm ) ){//新加index
+                clitywrapper.push(tmp);
+            }else{
+              //追加index
+                for(var j = 0; j < clitywrapper.length; j++){
+                    if(clitywrapper[j].index === cityszm){
+                        clitywrapper[j].list.push( {nm:city[i].nm,py:city[i].py} );
+                    }
+                }
+            }
+        };
+        function checkval( cityszm ) {
+            for(var t = 0; t < clitywrapper.length; t++){
+                if(clitywrapper[t].index === cityszm){
+                    return false;
+                }
+            }
+            return true;
+        };
+        clitywrapper.sort((a,b)=>{
+            if(a.index>b.index){
+                return 1
+            }else{
+                return -1;
+            }
+        });console.log(clitywrapper)
     })
   },
 }
